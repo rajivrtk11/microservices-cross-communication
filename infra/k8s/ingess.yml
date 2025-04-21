@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-gateway-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/auth-url: "http://auth-service.default.svc.cluster.local/validate"
+    nginx.ingress.kubernetes.io/auth-response-headers: "X-User-Id, X-User-Role"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: your-app.local
+      http:
+        paths:
+          - path: /order/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 80
+#          - path: /payment/?(.*)
+#            pathType: Prefix
+#            backend:
+#              service:
+#                name: payment-service-loadbalancer
+#                port:
+#                  number: 80
