@@ -80,7 +80,7 @@ public class ProductController {
 
             HttpHeaders headers = new HttpHeaders();
             headers.add("X-User-Id", claims.getSubject());  // user id
-            headers.add("X-User-Role", claims.get("role", String.class));  // custom claim
+//            headers.add("X-User-Role", claims.get("role", "Admin"));  // custom claim
 
             return new ResponseEntity<>(headers, HttpStatus.OK);
 
@@ -89,4 +89,5 @@ public class ProductController {
         }
     }
 }
+
 
