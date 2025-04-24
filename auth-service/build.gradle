@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.4'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'jacoco'
 }
 
 group = 'com.auth-service'
@@ -41,4 +42,21 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = '0.8.7' // Use the latest version
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport // Generate report after tests
+}
+
+jacocoTestReport {
+	dependsOn test
+	reports {
+		xml.required = false
+		html.required = true
+	}
 }

@@ -2,6 +2,7 @@ package com.auth_service.service;
 
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -54,12 +55,18 @@ public class JwtService {
     }
 
     public Claims getClaims(String token) {
-        final String username = extractUsername(token);
-        if(!isTokenExpired(token)) {
-            return extractAllClaims(token);
+        try {
+            final String username = extractUsername(token); // this also parses claims
+            if (!isTokenExpired(token)) {
+                return extractAllClaims(token);
+            }
+        } catch (ExpiredJwtException e) {
+            // Token is expired, return null as expected in the test
+            return null;
         }
         return null;
     }
+
 
 
     public String generateToken(String userName){
@@ -76,7 +83,7 @@ public class JwtService {
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
-    private Key getSignKey() {
+    public Key getSignKey() {
         byte[] keyBytes= Decoders.BASE64.decode(SECRET);
         return Keys.hmacShaKeyFor(keyBytes);
     }
